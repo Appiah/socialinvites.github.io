@@ -851,3 +851,24 @@ pre {
     margin-right: 360px;
   }
 }
+
+.image_small {
+  text-align: center;
+  width: 100px;
+}
+
+.subnavigation {
+  list-style: none;
+  display: inline;
+}
+
+.right-subnavigation {
+  float: right;
+  margin-right: 16px;
+}
+
+.center-subnavigation {
+  float: center;
+  margin-right: 8px;
+  margin-left: 8px;
+}

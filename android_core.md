@@ -1,6 +1,6 @@
 ---
 layout: page
-title: SI for Android (tm)
+title: Social Invites SDK for Android (tm)
 group: "core"
 weight: 3
 ---
@@ -15,36 +15,14 @@ This project is an Android library which can be merged with your Android project
 
 ## Step by step integration ##
 
-1. Copy the library file into libs folder.
-2. Copy infobip-socinv.ttf file from the library's assets folder to your application's assets folder.
-3. Add the library file to build path (in Eclipse: Select jar file -> right click -> Build Path -> Add to Build Path)
-4. Add activity declaration and user permissions to application project Manifest.xml file.
-5. Rebuild your project.
-
-User permissions:
-
-	<uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.INTERACT_ACCROSS_USERS_FULL" />
-
-Activity declaration:
-
-	<activity
-    	android:name="com.infobip.socialinvites.android.lib.activities.ContactsActivityLib"
-        android:configChanges="orientation|screenSize"
-        android:windowSoftInputMode="stateHidden" >
-	</activity>
+1. Copy the library file into the libs folder
+2. Add the library file to build the path (in Eclipse: Select jar file -> right click -> Build Path -> Add to Build Path)
+3. Rebuild your project
 
 ### Application registration ###
 
 In order to use the Social Invites library you have to create an Infobip account and register your mobile application. After registering the application you will obtain the **application key** and the **application secret key**.
-The next step is creating the default message for your application after which you will obtain the **default message ID**.
+The next step is creating default message for your application after which you will obtain the **default message ID**.
 
 ### Initialization ###
 
@@ -62,31 +40,32 @@ Then you should call the method
 
     initializeLibrary(ClientMobileApplication application, String defaultMessageId, InfobipAccountCredentials ibCredentials)
 
-from *SocialInvitesManager* class. This method gives *IllegalArgumentException* if any of the parameters is null or an empty string.
+from *SocialInvitesManager* class. This method throws *IllegalArgumentException* if any of parameters is null or an empty string.
 
     SocialInvitesManager.initializeLibrary(application, "default_message_id_abc123", ibCredentials);
 
-At any moment you can check if the library has been initialized by calling the `isLibraryInitialized()` method. If it is not, the method will initialize it.
+You can check if the library has been initialized at any moment by calling the `isLibraryInitialized()` method which will also initialize it if not previously initialized.
 
 Usage example:
 
     ClientMobileApplication application = new ClientMobileApplication("application_key_abc123", "application_secret_abc123");
     InfobipAccountCredentials ibCredentials = new InfobipAccountCredentials("infobip_username", "infobip_password");
+
     if (!SocialInvitesManager.isLibraryInitialized()) {
         SocialInvitesManager.initializeLibrary(application, "default_message_id_abc123", ibCredentials);
     }
 
 #### Sender ID ####
 
-In order to send an invitation you must set the Sender ID.
+In order to send the invitation you must set the Sender ID.
 
-The sender ID could either be a certain MSISDN (e.g. user's MSISDN - phone number) or an alphanumeric ID. If you decide to use the alphanumeric ID you have to take care of its length - max length of the alphanumeric sender ID is 11 characters. The method which is used for setting the Sender ID is `setSenderId(String senderId)`. If the Sender ID is null or an empty string, *IllegalArgumentException* will be given.
+The Sender ID could either be an MSISDN (e.g. user's MSISDN - phone number) or an alphanumeric ID. If you decide to use the alphanumeric ID you have to take care of its length – the max length of an alphanumeric ID is 11 characters. The method which is used for setting the Sender ID is `setSenderId(String senderId)`. If senderId is null or an empty string, *IllegalArgumentException* will be given.
 
 Usage example:
 
     SocialInvitesManager.setSenderId("sender_id");
 
-If you want to use the user's MSISDN as a sender ID, you can use the *SocialInvitesManager* method `fetchMsisdn()` which tries to get MSISDN from the user's mobile phone. Be aware that this method **will not return the MSISDN in every case**. It returns either MSISDN or null if fetching MSISDN is not possible on that device. If you use this method, you will have to handle *CannotFetchUserMSISDNException* if the user's MSISDN is not found on the phone. A recommendation for you is to try to fetch user's MSISDN, but you need to have a mechanism for getting the user's phone number. You can use Infobip’s 2-Factor Authentication solution (2FA).
+If you want to use user's MSISDN as the Sender ID, you can use *SocialInvitesManager* method `fetchMsisdn()` which tries to obtain the MSISDN from the user's mobile phone. Be aware that this method **will not return the MSISDN in every case**. It returns either the MSISDN or null if fetching the MSISDN is not possible on that device. By using this method, you will have to handle *CannotFetchUserMSISDNException* if the user's MSISDN is not found on phone. Recommendation for you is to try to fetch the user's MSISDN and to have some mechanism for obtaining the user's phone number. You can use Infobip’s 2-Factor Authentication (2FA).
 
 Usage example:
 
@@ -99,7 +78,7 @@ Usage example:
 
     SocialInvitesManager.setSenderId(senderId);
 
-Once you set the Sender ID or you fetch the MSISDN, you can use the method `getSenderId()` to find out the string representation of the Sender ID saved for that specific user.
+Once you set the Sender ID or you fetch the MSISDN, you can use the method `getSenderId()` to find out the string representation of the Sender ID that has been saved for that specific user.
 
 Usage example:
 
@@ -107,367 +86,126 @@ Usage example:
 
 #### Invitation message ####
 
-As mentioned above, after registering your application, you have to add the default message for your application. This default message is the invitation message for your application. Every time a user sends the invitation, the text of the message will be the text of the default message with the hyperlink included. You can get your default message at any moment as a *ClientMobileApplicationMessage* object using the `getDefaultMessage()` method from the *SocialInvitesManager*.
+As mentioned above, after registering the application, you have to add default message for your application. This default message is the invitation message for your application. Every time user sends the invitation, the message text will represent the text of the default message with the hyperlink included. You can get your default message at any moment as the *ClientMobileApplicationMessage* object using the `getDefaultMessage()` method from the *SocialInvitesManager*.
 
-If you want, you can provide your users with the possibility to send personalized messages instead of your default message by calling the `enableSendingCustomMessage()` method from *SocialInvitesManager*. In that case, the hyperlink will be added to the end of the customized message. All you have to do is to enable custom message sending. If custom message sending is enabled, the message line will be shown in the bottom of the contacts layout. That line contains message text which will be sent and the pen icon. Clicking on the **Pen icon** opens the edit message dialog where a user can customize his invitation message. The user has option to reset his custom message to default.
+Usage example:
 
-![](http://www.infobip.com/images/social_invites/EditMessageLineImage.png)
+    ClientMobileApplicationMessage defaultMessage = SocialInvitesManager.getDefaultMessage();
 
-![](http://www.infobip.com/images/social_invites/EditMessageDialogImage.png)
+This method throws *ClassNotFoundException*, *IOException* and *UserNotConnectedToInternetException* if the user is not connected to Internet (WiFi and 3G are turned off) and he tries to send the invitation.
 
+If you want to allow your users to send personalized messages instead of your default message, you should call the `enableSendingCustomMessage()` method. After doing that, you can set the custom message the user wants to send instead by calling the
 
-#### User's contacts list ####
+    setCustomMessage(ClientMobileApplicationMessage customMessage)
 
-Contacts layout contains the list of all contacts from the user's address book. If the contact has a picture stored on the user's device, the same picture will be shown in the list. If the contact doesn't have a  picture, the default picture will be shown instead.
+method from the *SocialInvitesManager*. This method needs Internet connection for its execution, so if user is not connected to the Internet (WiFi and 3G are turned off), the method will throw *UserNotConnectedToInternetException*.
 
-![](http://www.infobip.com/images/social_invites/ContactsLayoutImage.png)
+Usage example:
 
-For contacts with more than one phone number, the number of phone numbers is presented in the brackets beside **Invite** button. When the user clicks on the contact, all numbers are shown in the dropdown list. The user can choose whether he will invite his friend by sending invitations only to one phone number or to all numbers at the same time.
+    ClientMobileApplicationMessage message = new ClientMobileApplicationMessage("message_text", "placeholder");
+    SocialInvitesManager.enableSendingCustomMessage();
+    SocialInvitesManager.setCustomMessage(message);
 
-![](http://www.infobip.com/images/social_invites/ExpandedContactWithMoreThanOnePhoneNumber.png)
+Once the user has set the custom message text, he will use it until custom message sending is disabled. You can disable custom message sending and force the user to send only the default message.
 
-If the user tries to send the invitation while he has no Internet connection (WiFi and 3G are turned off), the dialog for enabling WiFi or 3G network will be displayed. When a user enables his network connection, the invitation will be sent automatically.
+    SocialInvitesManager.disableSendingCustomMessage();
 
-![](http://www.infobip.com/images/social_invites/ConnectToInternetDialog.png)
+#### User's contacts ####
 
-You can also manage and control the number of invitations that a user can send to one phone number. If you want to let the user send invitations to one phone number more than once, you have to enable invitation resending. You can do it by calling the **enableResendingInvitation** method. And if you want a user to send only one invitation to one phone number, you should call the **disableResendingInvitation** method. This is disabled by default.
+To fetch the user's contacts from his device by using our solution, you must implement the*ContactsListener* interface from library.
+
+Usage example:
+
+    public class ContactsActivity extends Activity implements ContactsListener {
+        ....
+    }
+
+Methods that have to be implemented are: `onContactsRetrieved(Context context, List<Contact> contacts)` and `onError(Context context, int errorCode)`.
+
+Usage example:
+
+    @Override
+    public void onContactsRetreived(Context context, List<Contact> contacts) {
+        ...
+    }
+
+    @Override
+    public void onError(Context context, int errorCode) {
+        ...
+    }
+
+The `onContactsRetrieved(Context context, List<Contact> contacts)` method receives list of contacts as a parameter and it is invoked when the `getContacts(Context context, ContactsListener contactsListener)` method from *SocialInvitesManager* finishes getting contacts from the user's phone.
+
+Usage example:
+
+    protected void onCreate(Bundle savedInstanceState) {
+        SocialInvitesManager.getContacts(this.getContext(), this);
+    }
+
+If you need to get previously invited contacts, you can get them by calling the `getInvitedContacts()` method on the *SocialInvitesManager*. This method returns all contacts invited from the user's phone.
+
+Usage example:
+
+    SocialInvitesManager.getInvitedContacts();
+
+#### Sending invitations ####
+
+If one contact has multiple phone numbers, the invitation can be sent either to one phone number or to all numbers. If you want to do this, use the following methods from the *SocialInvitesManager* class:
+
+- `sendInvitation(Contact contact)` - sends invitations to all of the contact’s MSISDNs
+- `sendInvitation(Contact contact, InvitationListener listener)` - sends invitations to all of the contact’s MSISDNs and registers an instance of class implementing *InvitationListener*
+- `sendInvitation(InvitationInfo phoneNumber)` - sends the invitation to a given phone number,
+- `sendInvitation(InvitationInfo phoneNumber, InvitationListener listener)` - sends the invitation to the phone number and a status update upon delivery - calls `onDeliveryStatusUpdated(String messageId, final String address, final int newStatus)` method on *listener*.
+
+If you use any of the methods given, you will have to handle *IllegalArgumentException* if the *senderId* is null or an empty string. You will also have to handle *UserNotConnectedToInternetException* if the user is not connected to the Internet; which means that invitations can't be sent.
+
+You can control the number of invitations that one user can send to a phone number. You can enable invitation resending to a single phone number by calling the `enableResendingInvitation()` method or simply disable it by calling `disableResendingInvitation()`. This is disabled by default.
 
 Usage example:
 
     SocialInvitesManager.enableInvitationResending();
     SocialInvitesManager.disableInvitationResending();
 
+##### InvitationListener #####
+
+The invitation listener is used to keep track of sent invitations. It has one method that you have to override. That method is `onDeliveryStatusUpdated(String messageId, final String address, final int newStatus)`. After each update of the delivery status for an invitation sent, this method will be called with the appropriate parameters.
+
+Usage example:
+
+    InvitationListener listener = new InvitationListener() {
+        @Override
+        public void onDeliveryStatusUpdated(String messageId, final String address, final int newStatus) {
+            ...
+        }
+    }
+
 #### Delivery statuses ####
 
-After a user sends the invitation, he may want to see if it has been delivered. Delivery status icon is shown in front of every invited phone number and over the contact's image, so the user has the information about which contact and which phone number he has invited.
-
-There are three possible delivery statuses:
-
-- **Delivered** - if the message has been delivered to the invited phone number
-- **Failed** - if the message delivery to the invited phone number has failed or if the phone number is invalid
-- **Pending** - if message has no final status yet
-
-![](http://www.infobip.com/images/social_invites/SlikaSaStatusima.png)
-
-Every time a user opens his contacts activity, checking of the delivery status for pending phone numbers starts.
-
-# CUSTOMIZATION #
-
-### User Interface Customization ###
-
-If you want you can customize your user interface by using your own resources in order to adjust it to your application design.
-
-Create a new *UICustomizationManager* instance in your code (with context as only and mandatory parameter).
-
-    UICustomizationManager uiCustomizationManager = new UICustomizationManager(context);
-
-#### Customization of layouts ####
-
-It is possible to redesign whole contacts activity or just part of it (contact item or contact detail from our list view), or to redesign dialogs (message editing dialog and Internet connection dialog). You have to create the appropriate layout and to put it in your **res/layout** folder for each of these customizations.
-
-##### Contacts activity layout #####
-
-For activity customization where the contacts will be displayed, you have to create your layout with two mandatory elements.
-
-- EditText for searching contacts with id: `inputSearch`,
-- ExpandableListView for displaying contacts data with id: `contactsListView`.
-
-If you want to give your users the possibility to read and change the message text, you will have to put three more mandatory elements into your layout.
-
-- LinearLayout for displaying and editing message text with id: `editMessageLinearLayout` and default height set to 0dp,
-- TextView for displaying message text inside linear layout with id: `defaultMessageTextView`,
-- ImageView or TextView for opening the dialog for message text editing inside a linear layout with id: `editMessageView`.
-
-You can reorder and customize elements as you see fit.
+After you send the invitation, you may want to show to the user the delivery status of a sent invitation. There are two ways for getting that delivery info. If you want to get the current delivery status you should use the `getDeliveryInfo(String bulkID)`method. The result of this method execution is the *DeliveryInfoResponse* object.
 
 Usage example:
 
-    <EditText
-        android:id="@+id/inputSearch"
-    ... />
+    String bulkId = SocialInvitesManager.getBulkId(contactId, "MSISDN");
+    DeliveryInfoResponse deliveryInfo = SocialInvitesManager.getDeliveryInfo(bulkId);
 
-    <ExpandableListView
-        android:id="@+id/contactsListView"
-        ... />
-
-    <LinearLayout
-        android:id="@+id/editMessageLinearLayout"
-        android:layout_height="0dp"
-        ... >
-
-        <TextView
-            android:id="@+id/defaultMessageTextView"
-            ... />
-
-        <ImageView
-            android:id="@+id/editMessageView"
-            ... />
-
-    </LinearLayout>
-
-Or:
-
-    <LinearLayout
-        android:id="@+id/editMessageLinearLayout"
-        android:layout_height="0dp"
-        ... >
-
-        <TextView
-            android:id="@+id/editMessageView"
-            ... />
-
-        <TextView
-            android:id="@+id/defaultMessageTextView"
-            ... />
-
-    </LinearLayout>
-
-    <ExpandableListView
-        android:id="@+id/contactsListView"
-        ... />
-
-    <EditText
-        android:id="@+id/inputSearch"
-    ... />
-
-After finishing your layout file and save it into the **res/layout** folder, you should call the `setContactsActivityLayout(String customContactsLayoutName)` method to apply your contact details theme.
+Another way for obtaining the delivery info is by calling the `tryGettingDeliveryInfo(String bulkId, InvitationListener listener)` method. This method will be getting delivery statuses until the delivery status is “delivered” or “not delivered” or until the number of attempts reaches a predefined value. Every time the delivery status changes, the *InvitationListener* method `onDeliveryStatusChanged()` is called.
 
 Usage example:
 
-    uiCustomizationManager.setContactsActivityLayout("custom_contacts_layout");
+    String bulkId = SocialInvitesManager.getBulkId(contactId, "MSISDN");
+    SocialInvitesManager.tryGettingDeliveryInfo("bulk_id", invitationListener);
 
-##### Contact item layout #####
-
-For the customization of contact items in the list you have to create your layout with four mandatory elements.
-
-- ImageView for displaying the contact image with id: `contactImage`,
-- ImageView or TextView for displaying delivery status with id: `statusView`,
-- TextView for displaying the contact name with id: `contactNameTextView`,
-- TextView for sending the invitation to all contact numbers with id: `inviteContactTextView`.
-
-You can reorder and customize elements as you see fit.
+If you want to check (manually force check) the delivery status for the pending MSISDN at any moment, you just have to call `checkDeliveryStatusForPendingMSISDNs()` method.
 
 Usage example:
 
-    <ImageView
-       android:id="@+id/contactImage"
-       ... />
-
-    <ImageView
-       android:id="@+id/statusView"
-       ... />
-
-    <TextView
-       android:id="@+id/contactNameTextView"
-       ... />
-
-    <TextView
-       android:id="@+id/inviteContactTextView"
-    ... />
-
-Or:
-
-    <ImageView
-       android:id="@+id/contactImage"
-       ... />
-
-    <TextView
-       android:id="@+id/contactNameTextView"
-       ... />
-
-    <TextView
-       android:id="@+id/statusView"
-       ... />
-
-    <TextView
-       android:id="@+id/inviteContactTextView"
-    ... />
-
-
-After you finish your layout file and save it into **res/layout** folder, you should call `setContactItemLayout(String customContactItemLayoutName)` to apply your contact item theme in the list.
-
-Usage example:
-
-    uiCustomizationManager.setContactItemLayout("custom_contact_item_layout");
-
-You can overlap views as we did in our default design (in order to have the status on top of the contact image).
-
-##### Contact details layout #####
-
-For contact detail customization you have to create your layout with three mandatory elements.
-
-- ImageView or TextView for displaying delivery status with id: `statusView`,
-- TextView for displaying the contact's phone number with id: `phoneNumberTextView`,
-- TextView for sending invitation with id: `invitePhoneNumberTextView`.
-
-You can reorder and customize elements as you see fit.
-
-    <TextView
-        android:id="@+id/phoneNumberTextView"
-        ... />
-
-    <ImageView
-        android:id="@+id/statusView"
-        ... />
-
-    <TextView
-        android:id="@+id/invitePhoneNumberTextView"
-        ... />
-
-Or:
-
-    <TextView
-        android:id="@+id/statusView"
-        ... />
-
-    <TextView
-        android:id="@+id/phoneNumberTextView"
-        ... />
-
-    <TextView
-        android:id="@+id/invitePhoneNumberTextView"
-        ... />
-
-After finishing your layout file and saving it into **res/layout** folder, you should call `setContactDetailsLayout(String customContactDetailsLayoutName)` to apply your theme for contact details.
-
-Usage example:
-
-    uiCustomizationManager.setContactDetailsLayout("custom_contact_details_layout");
-
-##### Edit message dialog layout #####
-
-For Edit message dialog customization you have to put five mandatory elements on your layout and you can customize them as you want.
-
-- EditText for input of the custom message with id: `customMessageEditText`,
-- TextView for showing how many characters left to the end of message with id: `messageLengthTextView`,
-- TextView for reseting the custom message to default value with id: `resetToDefaultMessageTextView`,
-- TextView for saving the custom message with id: `saveCustomMessageTextView`,
-- TextView for canceling the dialog with id: `cancelCustomMessageTextView`.
-
-You can reorder elements on dialog as you want.
-
-Usage example:
-
-     <EditText
-         android:id="@+id/customMessageEditText"
-         ... />
-
-     <TextView
-         android:id="@+id/messageLengthTextView"
-         ... />
-
-     <TextView
-         android:id="@+id/resetToDefaultMessageTextView"
-         ... />
-
-     <TextView
-         android:id="@+id/saveCustomMessageTextView"
-         ... />
-
-     <TextView
-         android:id="@+id/cancelCustomMessageTextView"
-         ... />
-
-After finishing your layout file and saving it into **res/layout** folder, you should call `setEditMessageDialogLayout(String customEditMessageDialogLayoutName)` to apply your theme for the dialog.
-
-Usage example:
-
-    uiCustomizationManager.setEditMessageDialogLayout("custom_edit_message_dialog_layout");
-
-##### Connect to internet dialog layout #####
-
-For the customization of this dialog you have to put three mandatory elements in your layout and you can customize them as you want.
-
-- TextView for enabling 3G network with id: `enable3GTextView`,
-- TextView for enabling WiFi Internet with id: `enableWifiTextView`,
-- TextView for the dismissal of the dialog with id: `cancelConnectDialogTextView`.
-
-Your dialog must contain these elements and you can store it however you want and can customize them as you wish:
-
-     <TextView
-        android:id="@+id/enableWifiTextView"
-        ... />
-
-     <TextView
-        android:id="@+id/enable3GTextView"
-        ... />
-
-     <TextView
-        android:id="@+id/cancelConnectDialogTextView"
-        ... />
-
-After finishing your layout file and saving it into **res/layout** folder, you should call `setConnectToInternetDialogLayout(String customConnectToInternetDialogName)` to apply your dialog theme.
-
-Usage example:
-
-    uiCustomizationManager.setConnectToInternetDialogLayout("custom_connect_to_internet_dialog_layout");
-
-#### Customization of images ####
-
-You can use your own images or icons as a part of our user interface.
-
-You can set different images for the invitation status (invitation delivered, invitation not delivered and invitation pending), default user image and edit message image. You have to put your images in your **res/drawable** folder and call the appropriate method from the *UICustomizationManager* class.
-
-- `setDeliveredImage(String customDeliveredImageName)` - sets the name of the ‘delivered’ image,
-- `setPendingImage(String customPendingImageName)` - sets the name of ‘pending’ image,
-- `setNotDeliveredImage(String customNotDeliveredImageName)` - sets the name of the ‘not delivered’ image,
-- `setEditMessageImage(String customEditMessageImageName)` - sets the name of ‘custom message’ image,
-- `setUserImage(String customUserImageName)` - sets the name of ‘user’ image.
-
-Usage example:
-
-    uiCustomizationManager.setDeliveredImage("custom_delivered_image");
-    uiCustomizationManager.setPendingImage("custom_pending_image");
-    uiCustomizationManager.setNotDeliveredImage("custom_not_delivered_image");
-    uiCustomizationManager.setEditMessageImage("custom_edit_message_image");
-    uiCustomizationManager.setUserImage("custom_default_user_image");
-
-If you decide to use icons (as letters from given font), you can also add your own icons. All you have to do is add your icon codes to strings.xml and call the appropriate method from the *UICustomizationManager* class and pass on the icon id.
-
-- `setDeliveredIcon(int deliveredIconFromR)` - sets the ‘delivered’ icon id from R.java,
-- `setPendingIcon(int deliveredIconFromR)` - sets the ‘pending icon’ id from R.java,
-- `setNotDeliveredIcon(int deliveredIconFromR)` - sets the ‘not delivered’ icon id from R.java,
-- `setEditMessageIcon(int deliveredIconFromR)` - sets ‘edit message’ icon id from R.java.
-
-If you use icons, you will probably want to set color of them. Methods for setting the icon color are:
-
-- `setPendingIconColor(String pendingIconColor)` - sets value of pending icon color,
-- `setDeliveredIconColor(String deliveredIconColor)` - sets value of delivered icon color,
-- `setNotDeliveredIconColor(String notDeliveredIconColor)` - sets value of not delivered icon color,
-- `setEditMessageIconColor(String editMessageIconColor)` -sets value of edit message icon color.
-
-Usage example:
-
-    uiCustomizationManager.setDeliveredIcon(R.string.myDeliveredIcon);
-    uiCustomizationManager.setDeliveredIconColor("#008500");
-    uiCustomizationManager.setPendingIcon(R.string.myPendingIcon);
-    uiCustomizationManager.setDeliveredIconColor("#FF7700");
-    uiCustomizationManager.setNotDeliveredIcon(R.string.myNotDeliveredIcon);
-    uiCustomizationManager.setDeliveredIconColor("#A60000");
-    uiCustomizationManager.setEditMessageIcon(R.string.myEditMessageIcon);
-    uiCustomizationManager.setEditMessageIconColor("#000000");
-
-#### Customization of text color ####
-
-You can set your color for invite text on the list view. The only thing you have to do is call the `setInviteColor(String color)` method from the *UICustomization* class.
-
-Usage example:
-
-    uiCustomizationManager.setInviteColor("#FFFFFF");
-
-#### Message layout displaying ####
-
-Set whether you to display the message text on the user interface or not by calling: `displayEditMessageLayout(boolean displayEditMessageLayout)`.
-
-Usage example:
-
-    uiCustomizationManager.setDisplayOfEditMessageLayout(true);
+    SocialInvitesManager.checkDeliveryStatusForPendingMSISDNs();
 
 ## Models ##
 
 ### ClientMobileApplication ###
 
-The *ClientMobileApplication* class contains information about the application and can be instantiated by using the default constructor or the constructor with parameters: **application key** (type: String) and **secret key** (type: String).
+*ClientMobileApplication* class contains information about the application and can be instantiated by using the default constructor or the constructor with parameters: **application key** (type: String) and **secret key** (type: String).
 
 Usage example:
 
@@ -479,14 +217,14 @@ Or:
 
 You can access these fields or change their values by using the following methods:
 
-- `getApplicationKey()` - returns the value of the application key
+- `getApplicationKey()` - returns the application key value
 - `setApplicationKey(String applicationKey)` - sets the application key value
-- `getSecretKey()` - returns the value of secret key
+- `getSecretKey()` - returns the secret key value
 - `setSecretKey(String secretKey)` - sets the secret key value
 
 ### InfobipAccountCredentials ###
 
-The *InfobipAccountCredentials* class contains information about your Infobip account: your username and your password. This class can be instantiated by using the default constructor or the constructor with parameters: **Infobip username** (type: String) and **Infobip password** (type: String).
+The *InfobipAccountCredentials* class contains information about your Infobip account: your username and your password. This class can be instantiated by using the default constructor or constructor with parameters: **Infobip username** (type: String) and **Infobip password** (type: String).
 
 Usage example:
 
@@ -496,12 +234,118 @@ Or:
 
     InfobipAccountCredentials ibCredentials = new InfobipAccountCredentials("infobip_username", "infobip_password");
 
+You can access these fields or change their values by using methods:
+
+- `getInfobipUsername()` - returns the Infobip username value
+- `setInfobipUsername(String infobipUsername)` - sets the Infobip username value
+- `getInfobipPassword()` - returns the Infobip password value
+- `setInfobipPassword(String infobipPassword)` - sets the Infobip password
+
+### ClientMobileApplicationMessage ###
+
+The *ClientMobileApplicationMessage* class contains information about the application message and can be instantiated by using the default constructor or the constructor with parameters: **text** (type: String) and **placeholder** (type: String). The placeholder's purpose is to define a text that will be recognized as a substring of the message's text and replacing it with a shortened link to the application's download page.
+
+Usage example:
+
+    ClientMobileApplicationMessage message = new ClientMobileApplicationMessage();
+
+Or:
+
+    ClientMobileApplicationMessage message = new ClientMobileApplicationMessage("message_text", "placeholder_for_url");
+
+Example of placeholder & message:
+***placeholder***: "*!@#$*",
+***message***: "*Give our new application a try (!@#$). Have a nice day!*".
+
+You can access the class fields or change their values by using the following methods:
+
+- `getText()` - returns the message text value
+- `setText(String text)` - sets the text value
+- `getPlaceholder()` - returns the placeholder value
+- `setPlaceholder(String placeholder)` - sets the placeholder value
+- `getKey()` - returns the message key value
+- `setKey(String key)` - sets the message key
+- `getApplicationKey()` - returns the application key value
+- `setApplicationKey(String applicationKey)` - sets the application key value
+
+### Contact ###
+
+The *Contact* class contains information about the contact. This class can be instantiated by using following constructors:
+
+- `Contact()`,
+- `Contact(int id)` - this constructor has the contact ID as a parameter,
+- `Contact(int id, String name)` - this constructor has the contact ID and the contact name as parameters
+- `Contact(int id, String name, Uri photoUri, List<InvitationInfo> phoneNumbers)` - this constructor has the contact ID, the contact name and the contact phone numbers as parameters
+
+You can access class fields or change their values by using the following methods:
+
+- `getId()` - returns the contact ID value
+- `setId(int id)` - sets the contact ID value
+- `getName()` - returns the contact name value
+- `setName(String name)` - sets the contact name value
+- `getPhoneNumbers()` - returns the list of the invitation info
+- `setPhoneNumbers(List<InvitationInfo> invitationInfos)` - sets the phone numbers value
+
+### InvitationInfo ###
+
+The *InvitationInfo* class contains information about the invitation and can be instantiated by using the default constructor, `InvitationInfo(int contactId, String msisdn)` constructor or `InvitationInfo(int contactId, String msisdn, int deliveryStatus, long lastStatusChangeTime)`.
+
 You can access these fields or change their values by using the following methods:
 
-- `getInfobipUsername()` - returns the Infobip username
-- `setInfobipUsername(String infobipUsername)` - sets the Infobip username value
-- `getInfobipPassword()` - returns the Infobip password
-- `setInfobipPassword(String infobipPassword)` - sets the Infobip password
+- `getContactId()` - returns contact ID value
+- `setContactId(int contactId)` - sets the contact ID value
+- `getMsisdn()` - returns the MSISDN value
+- `setMsisdn(String msisdn)` - sets the MSISDN value
+- `getInvitationDeliveryStatus()` - returns the invitation delivery status value
+- `setInvitationDeliveryStatus(int deliveryStatus)` - sets the delivery status value
+- `getLastStatusChangeTime()` - returns the last status change value (in milliseconds)
+- `setLastStatusChangeTime(long lastStatusChangeTime)` - sets the last status change time value (in milliseconds)
+- `getBulkId()` - returns the message bulk ID value
+- `setBulkId(String key)` - sets the message bulk ID value
+
+### DeliveryInfoResponse ###
+
+The *DeliveryInfoResponse* class contains information about delivery info response and can be instantiated by using the default constructor.
+
+You can access the class field or change its value by using methods:
+
+- `getDeliveryInfoList()` - returns the value of the delivery info list (*DeliveryInfoList* object)
+- `setDeliveryInfoList(DeliveryInfoList deliveryInfoList)` - sets the delivery info list value
+
+### DeliveryInfoList ###
+
+The *DeliveryInfoList* class contains information about “delivery infos” and can be instantiated by using the default constructor.
+
+Methods for accessing the class field or changing its value are:
+
+- `getDeliveryInfosList()` - returns the value of deliveryInfos field (array of *DeliveryInfo* objects)
+- `setDeliveryInfosList()` - sets the value of deliveryInfos field
+
+### DeliveryInfo ###
+
+The *DeliveryInfo* class contains information about delivery info and can be instantiated by using the default constructor
+
+Methods for accessing the class fields or changing their values are:
+
+- `getAddress()` - returns the address (msisdn) value
+- `setAddress(String address)` - sets the address (msisdn) value
+- `getMessageId()` - returns the invitation message ID value
+- `setMessageId(String messageId)` - sets the invitation message ID value
+- `getDeliveryStatus()` - returns the delivery status value
+- `setDeliveryStatus(String deliveryStatus)` - sets the delivery status value
+- `getClientCorrelator()` - returns the client correlator (same as bulk ID value) value
+- `setClientCorrelator(String clientCorrelator)` - sets the client correlator value
+- `getPrice()` - returns the price of sent invitation value
+- `setPrice(double price)` - sets the sent invitation price value
+
+This class also contains the method that can be used for mapping the delivery status to delivery status code - `getDeliveryStatusCode()` method.
+
+Delivery status mapping:
+
+- `INVITATION_STATUS_UNKNOWN` - delivery status is null or an empty string
+- `INVITATION_PENDING` - if the delivery status is "MessageWaiting" (the message is still queued for delivery. This is a temporary state, pending transition to one of the preceding states) or "DeliveredToNetwork" (successful delivery to the network enabler responsible for routing the message)
+- `INVITATION_NOT_DELIVERED` - if the delivery status is "DeliveryImpossible" (unsuccessful delivery - the message could not be delivered before it expired)
+- `INVITATION_DELIVERED` - if the delivery status is "DeliveredToTerminal" (indicating successful delivery to the terminal) or "DeliveryUncertain" (delivery status unknown, e.g. because it was handed off to another network)
 
 ### Owners ###
 

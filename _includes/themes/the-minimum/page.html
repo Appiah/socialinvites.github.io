@@ -11,6 +11,13 @@
 
 			<div class="bd">
 				<div class="entry-content">
+						{% if page.weight == 2 %}
+							{% assign pages_list = site.pages %}
+							{% assign group = 'subnavigation' %}
+							{% assign my_weight = page.weight %}
+							{% include subsubpages_list %}
+						{% endif %}
+
 					{{ content }}
 				</div><!-- entry-content -->
 			</div><!-- bd -->
