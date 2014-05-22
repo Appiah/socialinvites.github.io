@@ -11,13 +11,28 @@
 
 			<div class="bd">
 				<div class="entry-content">
-						{% if page.weight == 2 %}
-							{% assign pages_list = site.pages %}
-							{% assign group = 'subnavigation' %}
-							{% assign my_weight = page.weight %}
-							{% include subsubpages_list %}
+					<ul >
+					{% if page.url == '/si_lib_core.html' %}
+						<li class="list-none">
+					<a href="android_core.html"><img style="display: inline; width: 32px;" src="http://developer.android.com/images/brand/Android_Robot_100.png" />&nbsp;Social Invites SDK for Android</a> </li>
+						<li class="list-none">
+					<a href="ios_core.html"><img style="display: inline; width: 32px;" src="http://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/200px-Apple_logo_black.svg.png" />&nbsp;Social Invites SDK for iOS</a></li>
+					{% else %}
+						{% if page.url == '/si_lib_core_ui.html' %}
+							<li class="list-none">
+							<a href="android_core_ui.html"><img style="display: inline; width: 32px;" src="http://developer.android.com/images/brand/Android_Robot_100.png" />&nbsp;<span>Social Invites SDK for Android with UI</span></a> </li>
+								<li class="list-none">
+							<a href="ios_core_ui.html"><img style="display: inline; width: 32px;" src="http://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/200px-Apple_logo_black.svg.png" />&nbsp;Social Invites SDK for iOS with UI</a> </li>
+						{% else %}
+							{% if page.url == '/instructions.html' %}
+								<li>
+								<a href="si_lib_core.html"><span>Social Invites SDK</span></a> </li>
+									<li>
+								<a href="si_lib_core_ui.html"><span>Social Invites SDK with User Interface</span></a> </li>
+							{% endif %}
 						{% endif %}
-
+					{% endif %}
+				</ul>
 					{{ content }}
 				</div><!-- entry-content -->
 			</div><!-- bd -->

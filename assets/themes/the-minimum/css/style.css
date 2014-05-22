@@ -862,6 +862,10 @@ pre {
   display: inline;
 }
 
+.list-none {
+  list-style: none;
+}
+
 .right-subnavigation {
   float: right;
   margin-right: 16px;

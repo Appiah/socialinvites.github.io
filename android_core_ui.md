@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Social Invites SDK for Android (tm) with UI
-group: "core"
+group: "core_ui"
 weight: 4
 ---
 
