@@ -1,0 +1,18 @@
+{% for weight in (2..4) %}
+  <div class="unit-head-inner unit-inner ">
+    <nav class="nav-subnav">
+      <ul>
+      {% for p in pages_list %}
+        {% if p.weight == weight %}
+          <li style="list-style: none; display: inline;">
+            <a {% if p.url == page.url %}class="active"{% endif %} href="{{ p.url }}">   {{ p.title }}  </a>
+          </li><!--&nbsp;&nbsp;|&nbsp;-->
+        {% endif %}
+      {% endfor %}
+      </ul>
+    </nav>
+  </div>
+{% endfor %}
+{% assign pages_list =  nil %}
+{% assign group = nil %}
+{% assign my_weight = nil %}
