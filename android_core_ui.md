@@ -111,24 +111,24 @@ As mentioned above, after registering your application, you have to add the defa
 
 If you want, you can provide your users with the possibility to send personalized messages instead of your default message by calling the `enableSendingCustomMessage()` method from *SocialInvitesManager*. In that case, the hyperlink will be added to the end of the customized message. All you have to do is to enable custom message sending. If custom message sending is enabled, the message line will be shown in the bottom of the contacts layout. That line contains message text which will be sent and the pen icon. Clicking on the **Pen icon** opens the edit message dialog where a user can customize his invitation message. The user has option to reset his custom message to default.
 
-![](http://www.infobip.com/images/social_invites/EditMessageLineImage.png)
+<img style="width: 480px;" src="http://www.infobip.com/images/social_invites/EditMessageLineImage.png" />
 
-![](http://www.infobip.com/images/social_invites/EditMessageDialogImage.png)
+<img style="width: 480px;" src="http://www.infobip.com/images/social_invites/EditMessageDialogImage.png" />
 
 
 #### User's contacts list ####
 
 Contacts layout contains the list of all contacts from the user's address book. If the contact has a picture stored on the user's device, the same picture will be shown in the list. If the contact doesn't have a  picture, the default picture will be shown instead.
 
-![](http://www.infobip.com/images/social_invites/ContactsLayoutImage.png)
+<img style="width: 480px;" src="http://www.infobip.com/images/social_invites/ContactsLayoutImage.png" />
 
 For contacts with more than one phone number, the number of phone numbers is presented in the brackets beside **Invite** button. When the user clicks on the contact, all numbers are shown in the dropdown list. The user can choose whether he will invite his friend by sending invitations only to one phone number or to all numbers at the same time.
 
-![](http://www.infobip.com/images/social_invites/ExpandedContactWithMoreThanOnePhoneNumber.png)
+<img style="width: 480px;" src="http://www.infobip.com/images/social_invites/ExpandedContactWithMoreThanOnePhoneNumber.png" />
 
 If the user tries to send the invitation while he has no Internet connection (WiFi and 3G are turned off), the dialog for enabling WiFi or 3G network will be displayed. When a user enables his network connection, the invitation will be sent automatically.
 
-![](http://www.infobip.com/images/social_invites/ConnectToInternetDialog.png)
+<img style="width: 480px;" src="http://www.infobip.com/images/social_invites/ConnectToInternetDialog.png" />
 
 You can also manage and control the number of invitations that a user can send to one phone number. If you want to let the user send invitations to one phone number more than once, you have to enable invitation resending. You can do it by calling the **enableResendingInvitation** method. And if you want a user to send only one invitation to one phone number, you should call the **disableResendingInvitation** method. This is disabled by default.
 
@@ -147,7 +147,7 @@ There are three possible delivery statuses:
 - **Failed** - if the message delivery to the invited phone number has failed or if the phone number is invalid
 - **Pending** - if message has no final status yet
 
-![](http://www.infobip.com/images/social_invites/SlikaSaStatusima.png)
+<img style="width: 480px;" src="http://www.infobip.com/images/social_invites/SlikaSaStatusima.png" />
 
 Every time a user opens his contacts activity, checking of the delivery status for pending phone numbers starts.
 
