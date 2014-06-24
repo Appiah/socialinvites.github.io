@@ -15,9 +15,20 @@ This project is an Android library which can be merged with your Android project
 
 ## Step by step integration ##
 
-1. Copy the library file into the libs folder
-2. Add the library file to build the path (in Eclipse: Select jar file -> right click -> Build Path -> Add to Build Path)
-3. Rebuild your project
+1. Copy the library file into the libs folder,
+2. Add dependency to build.gradle file (`compile (name:'social-invites-core', ext:'aar')`),
+3. Add user permissions to application project Manifest.xml file.
+4. Rebuild your project.
+
+User permissions:
+
+	<uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERACT_ACCROSS_USERS_FULL" />
 
 ### Application registration ###
 
@@ -28,7 +39,11 @@ The next step is creating default message for your application after which you w
 
 Initialization is required for using the main library functionality - sending social invitations.
 
-The first thing you have to do is to create the *ClientMobileApplication* object with the **application key** (type: String) and the **application secret key** (type: String):
+The first thing you have to do is to create the *SocialInvitesCoreManager* object with **context** (type: android.content.Context) as only and mandatory parameter.
+
+	SocialInvitesCoreManager socialInvitesManager = new SocialInvitesCoreManager(context);
+
+You have to create the *ClientMobileApplication* object with the **application key** (type: String) and the **application secret key** (type: String):
 
     ClientMobileApplication application = new ClientMobileApplication("application_key_abc123", "application_secret_abc123");
 
@@ -36,23 +51,26 @@ and the *InfobipAccountCredentials* object with your **Infobip account username*
 
     InfobipAccountCredentials ibCredentials = new InfobipAccountCredentials("infobip_username", "infobip_password");
 
-Then you should call the method
+Then you should call the method `initializeLibrary(ClientMobileApplication application, String defaultMessageId, InfobipAccountCredentials ibCredentials)` or the method `initializeLibrary(ClientMobileApplication application, String defaultMessageId)` from *SocialInvitesCoreManager* class. These methods throw *IllegalArgumentException* if any of the parameters is null or an empty string.
 
-    initializeLibrary(ClientMobileApplication application, String defaultMessageId, InfobipAccountCredentials ibCredentials)
+Passing *InfobipAccountCredentials* object is optional, but be aware that, if you choose to initialize library without credentials, you will not be able to use some library functionalities.
 
-from *SocialInvitesManager* class. This method throws *IllegalArgumentException* if any of parameters is null or an empty string.
+    socialInvitesManager.initializeLibrary(application, "default_message_id_abc123", ibCredentials);
 
-    SocialInvitesManager.initializeLibrary(application, "default_message_id_abc123", ibCredentials);
+or
+
+	socialInvitesManager.initializeLibrary(application, "default_message_id_abc123");
 
 You can check if the library has been initialized at any moment by calling the `isLibraryInitialized()` method which will also initialize it if not previously initialized.
 
 Usage example:
 
+	SocialInvitesCoreManager socialInvitesManager = new SocialInvitesCoreManager(activity.getBaseContext());
     ClientMobileApplication application = new ClientMobileApplication("application_key_abc123", "application_secret_abc123");
     InfobipAccountCredentials ibCredentials = new InfobipAccountCredentials("infobip_username", "infobip_password");
 
-    if (!SocialInvitesManager.isLibraryInitialized()) {
-        SocialInvitesManager.initializeLibrary(application, "default_message_id_abc123", ibCredentials);
+    if (!socialInvitesManager.isLibraryInitialized()) {
+        socialInvitesManager.initializeLibrary(application, "default_message_id_abc123", ibCredentials);
     }
 
 #### Sender ID ####
@@ -63,56 +81,54 @@ The Sender ID could either be an MSISDN (e.g. user's MSISDN - phone number) or a
 
 Usage example:
 
-    SocialInvitesManager.setSenderId("sender_id");
+    socialInvitesManager.setSenderId("sender_id");
 
-If you want to use user's MSISDN as the Sender ID, you can use *SocialInvitesManager* method `fetchMsisdn()` which tries to obtain the MSISDN from the user's mobile phone. Be aware that this method **will not return the MSISDN in every case**. It returns either the MSISDN or null if fetching the MSISDN is not possible on that device. By using this method, you will have to handle *CannotFetchUserMSISDNException* if the user's MSISDN is not found on phone. Recommendation for you is to try to fetch the user's MSISDN and to have some mechanism for obtaining the user's phone number. You can use Infobip’s 2-Factor Authentication (2FA).
+If you want to use user's MSISDN as the Sender ID, you can use *SocialInvitesCoreManager* method `fetchMsisdn()` which tries to obtain the MSISDN from the user's mobile phone. Be aware that this method **will not return the MSISDN in every case**. It returns either the MSISDN or null if fetching the MSISDN is not possible on that device. By using this method, you will have to handle *CannotFetchUserMSISDNException* if the user's MSISDN is not found on phone. Recommendation for you is to try to fetch the user's MSISDN and to have some mechanism for obtaining the user's phone number. You can use Infobip’s 2-Factor Authentication (2FA).
 
 Usage example:
 
     String senderId = "";
     try {
-        senderId = SocialInvitesManager.fetchMSISDN();
+        senderId = socialInvitesManager.fetchMSISDN();
     } catch (CannotFetchUserMSISDNException e){
         senderId = "sender_id";
     }
 
-    SocialInvitesManager.setSenderId(senderId);
+    socialInvitesManager.setSenderId(senderId);
 
 Once you set the Sender ID or you fetch the MSISDN, you can use the method `getSenderId()` to find out the string representation of the Sender ID that has been saved for that specific user.
 
 Usage example:
 
-    String senderId = SocialInvitesManager.getSenderId();
+    String senderId = socialInvitesManager.getSenderId();
 
 #### Invitation message ####
 
-As mentioned above, after registering the application, you have to add default message for your application. This default message is the invitation message for your application. Every time user sends the invitation, the message text will represent the text of the default message with the hyperlink included. You can get your default message at any moment as the *ClientMobileApplicationMessage* object using the `getDefaultMessage()` method from the *SocialInvitesManager*.
+As mentioned above, after registering the application, you have to add default message for your application. This default message is the invitation message for your application. Every time user sends the invitation, the message text will represent the text of the default message with the hyperlink included. You can get your default message at any moment as the *ClientMobileApplicationMessage* object using the `getDefaultMessage()` method from the *SocialInvitesCoreManager*.
 
 Usage example:
 
-    ClientMobileApplicationMessage defaultMessage = SocialInvitesManager.getDefaultMessage();
+    ClientMobileApplicationMessage defaultMessage = socialInvitesManager.getDefaultMessage();
 
 This method throws *ClassNotFoundException*, *IOException* and *UserNotConnectedToInternetException* if the user is not connected to Internet (WiFi and 3G are turned off) and he tries to send the invitation.
 
-If you want to allow your users to send personalized messages instead of your default message, you should call the `enableSendingCustomMessage()` method. After doing that, you can set the custom message the user wants to send instead by calling the
+If you want to allow your users to send personalized messages instead of your default message, which is possible **only if you have initialized library with Infobip account credentials**, you should call the `enableSendingCustomMessage()` method. After doing that, you can set the custom message the user wants to send instead by calling the `setCustomMessage(ClientMobileApplicationMessage customMessage)` method from the *SocialInvitesCoreManager*. This method needs Internet connection for its execution, so if user is not connected to the Internet (WiFi and 3G are turned off), the method will throw *UserNotConnectedToInternetException*.
 
-    setCustomMessage(ClientMobileApplicationMessage customMessage)
-
-method from the *SocialInvitesManager*. This method needs Internet connection for its execution, so if user is not connected to the Internet (WiFi and 3G are turned off), the method will throw *UserNotConnectedToInternetException*.
+**WARNING:** If you allow users to change the message, remember that a user can send a message with content which you cannot approve or uses this functionality to other purposes (e.g. if both resend mode and edit message are enabled).
 
 Usage example:
 
-    ClientMobileApplicationMessage message = new ClientMobileApplicationMessage("message_text", "placeholder");
-    SocialInvitesManager.enableSendingCustomMessage();
-    SocialInvitesManager.setCustomMessage(message);
+    ClientMobileApplicationMessage message = new ClientMobileApplicationMessage("message_text" + socialInvitesManager.getCustomMessagePlaceholder(), socialInvitesManager.getCustomMessagePlaceholder());
+    socialInvitesManager.enableSendingCustomMessage();
+    socialInvitesManager.setCustomMessage(message);
 
 Once the user has set the custom message text, he will use it until custom message sending is disabled. You can disable custom message sending and force the user to send only the default message.
 
-    SocialInvitesManager.disableSendingCustomMessage();
+    socialInvitesManager.disableSendingCustomMessage();
 
 #### User's contacts ####
 
-To fetch the user's contacts from his device by using our solution, you must implement the*ContactsListener* interface from library.
+To fetch the user's contacts from his device by using our solution, you must implement the *ContactsListener* interface from library.
 
 Usage example:
 
@@ -134,23 +150,23 @@ Usage example:
         ...
     }
 
-The `onContactsRetrieved(Context context, List<Contact> contacts)` method receives list of contacts as a parameter and it is invoked when the `getContacts(Context context, ContactsListener contactsListener)` method from *SocialInvitesManager* finishes getting contacts from the user's phone.
+The `onContactsRetrieved(Context context, List<Contact> contacts)` method receives list of contacts as a parameter and it is invoked when the `getContacts(Context context, ContactsListener contactsListener)` method from *SocialInvitesCoreManager* finishes getting contacts from the user's phone. If the contact has a picture stored on the user's device, value of photoUri field will be URI of that photo. If the contact doesn't have a  picture, value of photoUri will be null.
 
 Usage example:
 
     protected void onCreate(Bundle savedInstanceState) {
-        SocialInvitesManager.getContacts(this.getContext(), this);
+        socialInvitesManager.getContacts(this.getContext(), this);
     }
 
-If you need to get previously invited contacts, you can get them by calling the `getInvitedContacts()` method on the *SocialInvitesManager*. This method returns all contacts invited from the user's phone.
+If you need to get previously invited contacts, you can get them by calling the `getInvitedContacts()` method on the *SocialInvitesCoreManager*. This method returns all contacts invited from the user's phone.
 
 Usage example:
 
-    SocialInvitesManager.getInvitedContacts();
+    socialInvitesManager.getInvitedContacts();
 
 #### Sending invitations ####
 
-If one contact has multiple phone numbers, the invitation can be sent either to one phone number or to all numbers. If you want to do this, use the following methods from the *SocialInvitesManager* class:
+If one contact has multiple phone numbers, the invitation can be sent either to one phone number or to all numbers. If you want to do this, use the following methods from the *SocialInvitesCoreManager* class:
 
 - `sendInvitation(Contact contact)` - sends invitations to all of the contact’s MSISDNs
 - `sendInvitation(Contact contact, InvitationListener listener)` - sends invitations to all of the contact’s MSISDNs and registers an instance of class implementing *InvitationListener*
@@ -163,8 +179,8 @@ You can control the number of invitations that one user can send to a phone numb
 
 Usage example:
 
-    SocialInvitesManager.enableInvitationResending();
-    SocialInvitesManager.disableInvitationResending();
+    socialInvitesManager.enableInvitationResending();
+    socialInvitesManager.disableInvitationResending();
 
 ##### InvitationListener #####
 
@@ -181,25 +197,30 @@ Usage example:
 
 #### Delivery statuses ####
 
-After you send the invitation, you may want to show to the user the delivery status of a sent invitation. There are two ways for getting that delivery info. If you want to get the current delivery status you should use the `getDeliveryInfo(String bulkID)`method. The result of this method execution is the *DeliveryInfoResponse* object.
+After you send the invitation, you may want to show to the user the delivery status of a sent invitation. **You will not be able to show it if you have not initialized library with Infobip account credentials.** Anyway, you will be able to enable getting delivery statuses by calling the method `enableGettingDeliveryStatus()` or disable it by calling the `disableGettingDeliveryStatus()` from *SocialInvitesCoreManager* class. If getting delivery status is disabled, status of invitation will be `SENT` and this status will be stored in the database. Getting delivery status will be disabled by default if you initialize library without Infobip account credentials.
+
+	socialInvitesManager.enableGettingDeliveryStatus();
+	socialInvitesManager.disableGettingDeliveryStatus();
+
+There are two ways for getting that delivery info. If you want to get the current delivery status you should use the `getDeliveryInfo(String bulkID)`method. The result of this method execution is the *DeliveryInfoResponse* object.
 
 Usage example:
 
-    String bulkId = SocialInvitesManager.getBulkId(contactId, "MSISDN");
-    DeliveryInfoResponse deliveryInfo = SocialInvitesManager.getDeliveryInfo(bulkId);
+    String bulkId = socialInvitesManager.getBulkId(contactId, "MSISDN");
+    DeliveryInfoResponse deliveryInfo = socialInvitesManager.getDeliveryInfo(bulkId);
 
 Another way for obtaining the delivery info is by calling the `tryGettingDeliveryInfo(String bulkId, InvitationListener listener)` method. This method will be getting delivery statuses until the delivery status is “delivered” or “not delivered” or until the number of attempts reaches a predefined value. Every time the delivery status changes, the *InvitationListener* method `onDeliveryStatusChanged()` is called.
 
 Usage example:
 
-    String bulkId = SocialInvitesManager.getBulkId(contactId, "MSISDN");
-    SocialInvitesManager.tryGettingDeliveryInfo("bulk_id", invitationListener);
+    String bulkId = socialInvitesManager.getBulkId(contactId, "MSISDN");
+    socialInvitesManager.tryGettingDeliveryInfo("bulk_id", invitationListener);
 
 If you want to check (manually force check) the delivery status for the pending MSISDN at any moment, you just have to call `checkDeliveryStatusForPendingMSISDNs()` method.
 
 Usage example:
 
-    SocialInvitesManager.checkDeliveryStatusForPendingMSISDNs();
+    socialInvitesManager.checkDeliveryStatusForPendingMSISDNs();
 
 ## Models ##
 
@@ -217,10 +238,10 @@ Or:
 
 You can access these fields or change their values by using the following methods:
 
-- `getApplicationKey()` - returns the application key value
-- `setApplicationKey(String applicationKey)` - sets the application key value
-- `getSecretKey()` - returns the secret key value
-- `setSecretKey(String secretKey)` - sets the secret key value
+- `getApplicationKey()` - returns the application key value,
+- `setApplicationKey(String applicationKey)` - sets the application key value,
+- `getSecretKey()` - returns the secret key value,
+- `setSecretKey(String secretKey)` - sets the secret key value.
 
 ### InfobipAccountCredentials ###
 
@@ -236,10 +257,10 @@ Or:
 
 You can access these fields or change their values by using methods:
 
-- `getInfobipUsername()` - returns the Infobip username value
-- `setInfobipUsername(String infobipUsername)` - sets the Infobip username value
-- `getInfobipPassword()` - returns the Infobip password value
-- `setInfobipPassword(String infobipPassword)` - sets the Infobip password
+- `getInfobipUsername()` - returns the Infobip username value,
+- `setInfobipUsername(String infobipUsername)` - sets the Infobip username value,
+- `getInfobipPassword()` - returns the Infobip password value,
+- `setInfobipPassword(String infobipPassword)` - sets the Infobip password.
 
 ### ClientMobileApplicationMessage ###
 
@@ -254,19 +275,20 @@ Or:
     ClientMobileApplicationMessage message = new ClientMobileApplicationMessage("message_text", "placeholder_for_url");
 
 Example of placeholder & message:
-***placeholder***: "*!@#$*",
-***message***: "*Give our new application a try (!@#$). Have a nice day!*".
+
+- ***placeholder***: "*!@#$*",
+- ***message***: "*Give our new application a try (!@#$). Have a nice day!*".
 
 You can access the class fields or change their values by using the following methods:
 
-- `getText()` - returns the message text value
-- `setText(String text)` - sets the text value
-- `getPlaceholder()` - returns the placeholder value
-- `setPlaceholder(String placeholder)` - sets the placeholder value
-- `getKey()` - returns the message key value
-- `setKey(String key)` - sets the message key
-- `getApplicationKey()` - returns the application key value
-- `setApplicationKey(String applicationKey)` - sets the application key value
+- `getText()` - returns the message text value,
+- `setText(String text)` - sets the text value,
+- `getPlaceholder()` - returns the placeholder value,
+- `setPlaceholder(String placeholder)` - sets the placeholder value,
+- `getKey()` - returns the message key value,
+- `setKey(String key)` - sets the message key,
+- `getApplicationKey()` - returns the application key value,
+- `setApplicationKey(String applicationKey)` - sets the application key value.
 
 ### Contact ###
 
@@ -279,12 +301,12 @@ The *Contact* class contains information about the contact. This class can be in
 
 You can access class fields or change their values by using the following methods:
 
-- `getId()` - returns the contact ID value
-- `setId(int id)` - sets the contact ID value
-- `getName()` - returns the contact name value
-- `setName(String name)` - sets the contact name value
-- `getPhoneNumbers()` - returns the list of the invitation info
-- `setPhoneNumbers(List<InvitationInfo> invitationInfos)` - sets the phone numbers value
+- `getId()` - returns the contact ID value,
+- `setId(int id)` - sets the contact ID value,
+- `getName()` - returns the contact name value,
+- `setName(String name)` - sets the contact name value,
+- `getPhoneNumbers()` - returns the list of the invitation info,
+- `setPhoneNumbers(List<InvitationInfo> invitationInfos)` - sets the phone numbers value.
 
 ### InvitationInfo ###
 
@@ -292,16 +314,16 @@ The *InvitationInfo* class contains information about the invitation and can be 
 
 You can access these fields or change their values by using the following methods:
 
-- `getContactId()` - returns contact ID value
-- `setContactId(int contactId)` - sets the contact ID value
-- `getMsisdn()` - returns the MSISDN value
-- `setMsisdn(String msisdn)` - sets the MSISDN value
-- `getInvitationDeliveryStatus()` - returns the invitation delivery status value
-- `setInvitationDeliveryStatus(int deliveryStatus)` - sets the delivery status value
-- `getLastStatusChangeTime()` - returns the last status change value (in milliseconds)
-- `setLastStatusChangeTime(long lastStatusChangeTime)` - sets the last status change time value (in milliseconds)
-- `getBulkId()` - returns the message bulk ID value
-- `setBulkId(String key)` - sets the message bulk ID value
+- `getContactId()` - returns contact ID value,
+- `setContactId(int contactId)` - sets the contact ID value,
+- `getMsisdn()` - returns the MSISDN value,
+- `setMsisdn(String msisdn)` - sets the MSISDN value,
+- `getInvitationDeliveryStatus()` - returns the invitation delivery status value,
+- `setInvitationDeliveryStatus(int deliveryStatus)` - sets the delivery status value,
+- `getLastStatusChangeTime()` - returns the last status change value (in milliseconds),
+- `setLastStatusChangeTime(long lastStatusChangeTime)` - sets the last status change time value (in milliseconds),
+- `getBulkId()` - returns the message bulk ID value,
+- `setBulkId(String key)` - sets the message bulk ID value.
 
 ### DeliveryInfoResponse ###
 
@@ -309,8 +331,8 @@ The *DeliveryInfoResponse* class contains information about delivery info respon
 
 You can access the class field or change its value by using methods:
 
-- `getDeliveryInfoList()` - returns the value of the delivery info list (*DeliveryInfoList* object)
-- `setDeliveryInfoList(DeliveryInfoList deliveryInfoList)` - sets the delivery info list value
+- `getDeliveryInfoList()` - returns the value of the delivery info list (*DeliveryInfoList* object),
+- `setDeliveryInfoList(DeliveryInfoList deliveryInfoList)` - sets the delivery info list value.
 
 ### DeliveryInfoList ###
 
@@ -318,8 +340,8 @@ The *DeliveryInfoList* class contains information about “delivery infos” and
 
 Methods for accessing the class field or changing its value are:
 
-- `getDeliveryInfosList()` - returns the value of deliveryInfos field (array of *DeliveryInfo* objects)
-- `setDeliveryInfosList()` - sets the value of deliveryInfos field
+- `getDeliveryInfosList()` - returns the value of deliveryInfos field (array of *DeliveryInfo* objects),
+- `setDeliveryInfosList()` - sets the value of deliveryInfos field.
 
 ### DeliveryInfo ###
 
@@ -327,25 +349,25 @@ The *DeliveryInfo* class contains information about delivery info and can be ins
 
 Methods for accessing the class fields or changing their values are:
 
-- `getAddress()` - returns the address (msisdn) value
-- `setAddress(String address)` - sets the address (msisdn) value
-- `getMessageId()` - returns the invitation message ID value
-- `setMessageId(String messageId)` - sets the invitation message ID value
-- `getDeliveryStatus()` - returns the delivery status value
-- `setDeliveryStatus(String deliveryStatus)` - sets the delivery status value
-- `getClientCorrelator()` - returns the client correlator (same as bulk ID value) value
-- `setClientCorrelator(String clientCorrelator)` - sets the client correlator value
-- `getPrice()` - returns the price of sent invitation value
-- `setPrice(double price)` - sets the sent invitation price value
+- `getAddress()` - returns the address (msisdn) value,
+- `setAddress(String address)` - sets the address (msisdn) value,
+- `getMessageId()` - returns the invitation message ID value,
+- `setMessageId(String messageId)` - sets the invitation message ID value,
+- `getDeliveryStatus()` - returns the delivery status value,
+- `setDeliveryStatus(String deliveryStatus)` - sets the delivery status value,
+- `getClientCorrelator()` - returns the client correlator (same as bulk ID value) value,
+- `setClientCorrelator(String clientCorrelator)` - sets the client correlator value,
+- `getPrice()` - returns the price of sent invitation value,
+- `setPrice(double price)` - sets the sent invitation price value.
 
 This class also contains the method that can be used for mapping the delivery status to delivery status code - `getDeliveryStatusCode()` method.
 
 Delivery status mapping:
 
-- `INVITATION_STATUS_UNKNOWN` - delivery status is null or an empty string
-- `INVITATION_PENDING` - if the delivery status is "MessageWaiting" (the message is still queued for delivery. This is a temporary state, pending transition to one of the preceding states) or "DeliveredToNetwork" (successful delivery to the network enabler responsible for routing the message)
-- `INVITATION_NOT_DELIVERED` - if the delivery status is "DeliveryImpossible" (unsuccessful delivery - the message could not be delivered before it expired)
-- `INVITATION_DELIVERED` - if the delivery status is "DeliveredToTerminal" (indicating successful delivery to the terminal) or "DeliveryUncertain" (delivery status unknown, e.g. because it was handed off to another network)
+- `INVITATION_STATUS_UNKNOWN` - delivery status is null or an empty string,
+- `INVITATION_PENDING` - if the delivery status is "MessageWaiting" (the message is still queued for delivery. This is a temporary state, pending transition to one of the preceding states) or "DeliveredToNetwork" (successful delivery to the network enabler responsible for routing the message),
+- `INVITATION_NOT_DELIVERED` - if the delivery status is "DeliveryImpossible" (unsuccessful delivery - the message could not be delivered before it expired),
+- `INVITATION_DELIVERED` - if the delivery status is "DeliveredToTerminal" (indicating successful delivery to the terminal) or "DeliveryUncertain" (delivery status unknown, e.g. because it was handed off to another network).
 
 ### Owners ###
 

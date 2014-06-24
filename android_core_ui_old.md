@@ -16,9 +16,10 @@ This project is an Android library which can be merged with your Android project
 ## Step by step integration ##
 
 1. Copy the library file into libs folder.
-2. Add dependency to build.gradle file (`compile (name:'social-invites-ui', ext:'aar')`)
-3. Add activity declaration and user permissions to application project Manifest.xml file.
-4. Rebuild your project.
+2. Copy infobip-socinv.ttf file from the library's assets folder to your application's assets folder.
+3. Add the library file to build path (in Eclipse: Select jar file -> right click -> Build Path -> Add to Build Path)
+4. Add activity declaration and user permissions to application project Manifest.xml file.
+5. Rebuild your project.
 
 User permissions:
 
@@ -35,7 +36,7 @@ User permissions:
 Activity declaration:
 
 	<activity
-    	android:name="com.infobip.socialinvites.android.lib.ui.ContactsActivityLib"
+    	android:name="com.infobip.socialinvites.android.lib.activities.ContactsActivityLib"
         android:configChanges="orientation|screenSize"
         android:windowSoftInputMode="stateHidden" >
 	</activity>
@@ -49,11 +50,7 @@ The next step is creating the default message for your application after which y
 
 Initialization is required for using the main library functionality - sending social invitations.
 
-The first thing you have to do is to create the *SocialInvitesUIManager* object with **context** (type: android.content.Context) as only and mandatory parameter.
-
-	SocialInvitesUIManager socialInvitesManager = new SocialInvitesUIManager(context);
-
-You have to create the *ClientMobileApplication* object with the **application key** (type: String) and the **application secret key** (type: String):
+The first thing you have to do is to create the *ClientMobileApplication* object with the **application key** (type: String) and the **application secret key** (type: String):
 
     ClientMobileApplication application = new ClientMobileApplication("application_key_abc123", "application_secret_abc123");
 
@@ -61,25 +58,22 @@ and the *InfobipAccountCredentials* object with your **Infobip account username*
 
     InfobipAccountCredentials ibCredentials = new InfobipAccountCredentials("infobip_username", "infobip_password");
 
-Then you should call the method `initializeLibrary(ClientMobileApplication application, String defaultMessageId, InfobipAccountCredentials ibCredentials)` or the method `initializeLibrary(ClientMobileApplication application, String defaultMessageId)` from *SocialInvitesUIManager* class. These methods throw *IllegalArgumentException* if any of the parameters is null or an empty string.
+Then you should call the method
 
-Passing *InfobipAccountCredentials* object is optional, but be aware that, if you choose to initialize library without credentials, you will not be able to use some library functionalities.
+    initializeLibrary(ClientMobileApplication application, String defaultMessageId, InfobipAccountCredentials ibCredentials)
 
-    socialInvitesManager.initializeLibrary(application, "default_message_id_abc123", ibCredentials);
+from *SocialInvitesManager* class. This method gives *IllegalArgumentException* if any of the parameters is null or an empty string.
 
-or
-
-	socialInvitesManager.initializeLibrary(application, "default_message_id_abc123");
+    SocialInvitesManager.initializeLibrary(application, "default_message_id_abc123", ibCredentials);
 
 At any moment you can check if the library has been initialized by calling the `isLibraryInitialized()` method. If it is not, the method will initialize it.
 
 Usage example:
 
-	SocialInvitesUIManager socialInvitesManager = new SocialInvitesUIManager(activity.getBaseContext());
     ClientMobileApplication application = new ClientMobileApplication("application_key_abc123", "application_secret_abc123");
     InfobipAccountCredentials ibCredentials = new InfobipAccountCredentials("infobip_username", "infobip_password");
-    if (!socialInvitesManager.isLibraryInitialized()) {
-        socialInvitesManager.initializeLibrary(application, "default_message_id_abc123", ibCredentials);
+    if (!SocialInvitesManager.isLibraryInitialized()) {
+        SocialInvitesManager.initializeLibrary(application, "default_message_id_abc123", ibCredentials);
     }
 
 #### Sender ID ####
@@ -90,34 +84,32 @@ The sender ID could either be a certain MSISDN (e.g. user's MSISDN - phone numbe
 
 Usage example:
 
-    socialInvitesManager.setSenderId("sender_id");
+    SocialInvitesManager.setSenderId("sender_id");
 
-If you want to use the user's MSISDN as a sender ID, you can use the *SocialInvitesUIManager* method `fetchMsisdn()` which tries to get MSISDN from the user's mobile phone. Be aware that this method **will not return the MSISDN in every case**. It returns either MSISDN or null if fetching MSISDN is not possible on that device. If you use this method, you will have to handle *CannotFetchUserMSISDNException* if the user's MSISDN is not found on the phone. A recommendation for you is to try to fetch user's MSISDN, but you need to have a mechanism for getting the user's phone number. You can use Infobip’s 2-Factor Authentication solution (2FA).
+If you want to use the user's MSISDN as a sender ID, you can use the *SocialInvitesManager* method `fetchMsisdn()` which tries to get MSISDN from the user's mobile phone. Be aware that this method **will not return the MSISDN in every case**. It returns either MSISDN or null if fetching MSISDN is not possible on that device. If you use this method, you will have to handle *CannotFetchUserMSISDNException* if the user's MSISDN is not found on the phone. A recommendation for you is to try to fetch user's MSISDN, but you need to have a mechanism for getting the user's phone number. You can use Infobip’s 2-Factor Authentication solution (2FA).
 
 Usage example:
 
     String senderId = "";
     try {
-        senderId = socialInvitesManager.fetchMSISDN();
+        senderId = SocialInvitesManager.fetchMSISDN();
     } catch (CannotFetchUserMSISDNException e){
         senderId = "sender_id";
     }
 
-    socialInvitesManager.setSenderId(senderId);
+    SocialInvitesManager.setSenderId(senderId);
 
 Once you set the Sender ID or you fetch the MSISDN, you can use the method `getSenderId()` to find out the string representation of the Sender ID saved for that specific user.
 
 Usage example:
 
-    String senderId = socialInvitesManager.getSenderId();
+    String senderId = SocialInvitesManager.getSenderId();
 
 #### Invitation message ####
 
-As mentioned above, after registering your application, you have to add the default message for your application. This default message is the invitation message for your application. Every time a user sends the invitation, the text of the message will be the text of the default message with the hyperlink included. You can get your default message at any moment as a *ClientMobileApplicationMessage* object using the `getDefaultMessage()` method from the *SocialInvitesUIManager*.
+As mentioned above, after registering your application, you have to add the default message for your application. This default message is the invitation message for your application. Every time a user sends the invitation, the text of the message will be the text of the default message with the hyperlink included. You can get your default message at any moment as a *ClientMobileApplicationMessage* object using the `getDefaultMessage()` method from the *SocialInvitesManager*.
 
-If you want, you can provide your users with the possibility to send personalized messages instead of your default message by calling the `enableSendingCustomMessage()` method from *SocialInvitesUIManager*. **You can do this only if you have initialized library with Infobip account credentials.** In that case, the hyperlink will be added to the end of the customized message. All you have to do is to enable custom message sending. If custom message sending is enabled, the message line will be shown in the bottom of the contacts layout. That line contains message text which will be sent and the pen icon. Clicking on the **Pen icon** opens the edit message dialog where a user can customize his invitation message. The user has option to reset his custom message to default.
-
-**WARNING:** If you allow users to change the message, remember that a user can send a message with content which you cannot approve or uses this functionality to other purposes (e.g. if both resend mode and edit message are enabled).
+If you want, you can provide your users with the possibility to send personalized messages instead of your default message by calling the `enableSendingCustomMessage()` method from *SocialInvitesManager*. In that case, the hyperlink will be added to the end of the customized message. All you have to do is to enable custom message sending. If custom message sending is enabled, the message line will be shown in the bottom of the contacts layout. That line contains message text which will be sent and the pen icon. Clicking on the **Pen icon** opens the edit message dialog where a user can customize his invitation message. The user has option to reset his custom message to default.
 
 <img style="width: 480px;" src="http://www.infobip.com/images/social_invites/EditMessageLineImage.png" />
 
@@ -138,28 +130,21 @@ If the user tries to send the invitation while he has no Internet connection (Wi
 
 <img style="width: 480px;" src="http://www.infobip.com/images/social_invites/ConnectToInternetDialog.png" />
 
-You can also manage and control the number of invitations that a user can send to one phone number. If you want to let the user send invitations to one phone number more than once, you have to enable invitation resending. You can do it by calling the `enableResendingInvitation()` method. And if you want a user to send only one invitation to one phone number, you should call the `disableResendingInvitation()` method. This is disabled by default.
+You can also manage and control the number of invitations that a user can send to one phone number. If you want to let the user send invitations to one phone number more than once, you have to enable invitation resending. You can do it by calling the **enableResendingInvitation** method. And if you want a user to send only one invitation to one phone number, you should call the **disableResendingInvitation** method. This is disabled by default.
 
 Usage example:
-
-    socialInvitesManager.enableInvitationResending();
-    socialInvitesManager.disableInvitationResending();
+    SocialInvitesManager.enableInvitationResending();
+    SocialInvitesManager.disableInvitationResending();
 
 #### Delivery statuses ####
 
-After a user sends the invitation, he may want to see if it has been delivered. **He will not be able to see delivery status if you have not initialized library with Infobip account credentials.**  Anyway, you will be able to enable getting delivery statuses by calling the method `enableGettingDeliveryStatus()` or disable it by calling the `disableGettingDeliveryStatus()` from *SocialInvitesUIManager* class. If getting delivery status is disabled, status of invitation will be `SENT` and this status will be stored in the database. Getting delivery status will be disabled by default if you initialize library without Infobip account credentials.
+After a user sends the invitation, he may want to see if it has been delivered. Delivery status icon is shown in front of every invited phone number and over the contact's image, so the user has the information about which contact and which phone number he has invited.
 
-	socialInvitesManager.enableGettingDeliveryStatus();
-	socialInvitesManager.disableGettingDeliveryStatus();
+There are three possible delivery statuses:
 
-Delivery status icon is shown in front of every invited phone number and over the contact's image, so the user has the information about which contact and which phone number he has invited.
-
-There are four possible delivery statuses:
-
-- **Delivered** - if the message has been delivered to the invited phone number,
-- **Failed** - if the message delivery to the invited phone number has failed or if the phone number is invalid,
-- **Pending** - if message has no final status yet,
-- **Sent** - if message has been sent and getting delivery status is disabled. In this case, delivery status icon will be the same as delivered icon.
+- **Delivered** - if the message has been delivered to the invited phone number
+- **Failed** - if the message delivery to the invited phone number has failed or if the phone number is invalid
+- **Pending** - if message has no final status yet
 
 <img style="width: 480px;" src="http://www.infobip.com/images/social_invites/SlikaSaStatusima.png" />
 
@@ -234,7 +219,7 @@ Or:
             android:id="@+id/defaultMessageTextView"
             ... />
 
-    </LinearLayout
+    </LinearLayout>
 
     <ExpandableListView
         android:id="@+id/contactsListView"
@@ -277,7 +262,7 @@ Usage example:
 
     <TextView
        android:id="@+id/inviteContactTextView"
-    ... />  
+    ... />
 
 Or:
 
@@ -295,7 +280,7 @@ Or:
 
     <TextView
        android:id="@+id/inviteContactTextView"
-    ... />  
+    ... />
 
 
 After you finish your layout file and save it into **res/layout** folder, you should call `setContactItemLayout(String customContactItemLayoutName)` to apply your contact item theme in the list.
@@ -352,8 +337,7 @@ Usage example:
 
 For Edit message dialog customization you have to put five mandatory elements on your layout and you can customize them as you want.
 
-- EditText for input of the custom
--  with id: `customMessageEditText`,
+- EditText for input of the custom message with id: `customMessageEditText`,
 - TextView for showing how many characters left to the end of message with id: `messageLengthTextView`,
 - TextView for reseting the custom message to default value with id: `resetToDefaultMessageTextView`,
 - TextView for saving the custom message with id: `saveCustomMessageTextView`,
@@ -494,10 +478,10 @@ Or:
 
 You can access these fields or change their values by using the following methods:
 
-- `getApplicationKey()` - returns the value of the application key,
-- `setApplicationKey(String applicationKey)` - sets the application key value,
-- `getSecretKey()` - returns the value of secret key,
-- `setSecretKey(String secretKey)` - sets the secret key value.
+- `getApplicationKey()` - returns the value of the application key
+- `setApplicationKey(String applicationKey)` - sets the application key value
+- `getSecretKey()` - returns the value of secret key
+- `setSecretKey(String secretKey)` - sets the secret key value
 
 ### InfobipAccountCredentials ###
 
@@ -513,10 +497,10 @@ Or:
 
 You can access these fields or change their values by using the following methods:
 
-- `getInfobipUsername()` - returns the Infobip username,
-- `setInfobipUsername(String infobipUsername)` - sets the Infobip username value,
-- `getInfobipPassword()` - returns the Infobip password,
-- `setInfobipPassword(String infobipPassword)` - sets the Infobip password.
+- `getInfobipUsername()` - returns the Infobip username
+- `setInfobipUsername(String infobipUsername)` - sets the Infobip username value
+- `getInfobipPassword()` - returns the Infobip password
+- `setInfobipPassword(String infobipPassword)` - sets the Infobip password
 
 ### Owners ###
 
