@@ -157,7 +157,7 @@ If you want to include your code when sent invites return an error, define the m
 
 For the delivery status error define the `-(void)getDeliveryInfoDidReceiveErrorResponse:(NSError *)error`method. For a successful response use the `-(void)getDeliveryInfoDidReceiveSuccessfulResponse:(SocialInviteDelivery *)response` method.
 
-“Edit message” can create, get or update the message so you can use one of the following methods to get an error: `-(void)createMessageDidReceiveErrorResponse:(NSError *)error`, `-(void)getMessageDidReceiveErrorResponse:(NSError *)error` or `-(void)updateMessageDidReceiveErrorResponse:(NSError *)error`. For a successful response use one of the following methods: `-(void)createMessageDidReceiveSuccessfulResponse:(ClientMobileApplicationMessageResponse *)response`,` -(void)getMessageDidReceiveSuccessfulResponse:(ClientMobileApplicationMessageResponse *)response` or `-(void)updateMessageDidReceiveSuccessfulResponse:(ClientMobileApplicationMessageResponse *)response`.
+“Edit message” can create, get or update the message so you can use one of the following methods to get an error: `-(void)createMessageDidReceiveErrorResponse:(NSError *)error`, `-(void)getMessageDidReceiveErrorResponse:(NSError *)error` or `-(void)updateMessageDidReceiveErrorResponse:(NSError *)error`. For a successful response use one of the following methods: `-(void)createMessageDidReceiveSuccessfulResponse:(ClientMobileApplicationMessageResponse *)response`, `-(void)getMessageDidReceiveSuccessfulResponse:(ClientMobileApplicationMessageResponse *)response` or `-(void)updateMessageDidReceiveSuccessfulResponse:(ClientMobileApplicationMessageResponse *)response`.
 Owners
 ------
 Framework Integration Team @ Infobip Belgrade, Serbia
