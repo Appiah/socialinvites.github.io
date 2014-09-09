@@ -119,9 +119,9 @@ If you want, you can provide your users with the possibility to send personalize
 
 **WARNING:** If you allow users to change the message, remember that a user can send a message with content which you cannot approve or uses this functionality to other purposes (e.g. if both resend mode and edit message are enabled).
 
-<img style="width: 480px;" src="http://www.infobip.com/images/social_invites/EditMessageLineImage.png" />
+<img style="width: 480px;" src="http://www.infobip.com/images/demo/EditMessageLineImage.png" />
 
-<img style="width: 480px;" src="http://www.infobip.com/images/social_invites/EditMessageDialogImage.png" />
+<img style="width: 480px;" src="http://www.infobip.com/images/demo/EditMessageDialogImage.png" />
 
 
 #### User's contacts list ####
