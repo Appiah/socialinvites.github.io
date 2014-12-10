@@ -60,8 +60,8 @@ If message has client placeholders, you have to create list of String objects wh
 - **RECEIVER_NAME**: Assigns name of contact, to which user sends social invitation, fetched from user's phonebook. 
 - **SENDER_NAME**: Assigns defined sender id for application.
 - **CUSTOM_TEXT**: With this placeholder defined in a list you give possibilty to end users to write their own part of message. 
-- **END_USER_MSISDN**: Assigns end user phone number to placeholder. Note that you have to provide end users phone number after initialization of library. Provide phone number by calling of method `setEndUserMSISDNPlaceholder(endUserMSISDNPlaceholderValue);`
-- **END_USER_USERNAME**: Assigns end user username to placeholder.  You have to provide end user username by calling method `setEndUserUsernamePlaceholder(endUserUsernamePlaceholderValue);` after initialization of library.
+- **END\_USER_MSISDN**: Assigns end user phone number to placeholder. Note that you have to provide end users phone number after initialization of library. Provide phone number by calling of method `setEndUserMSISDNPlaceholder(endUserMSISDNPlaceholderValue);`
+- **END\_USER_USERNAME**: Assigns end user username to placeholder.  You have to provide end user username by calling method `setEndUserUsernamePlaceholder(endUserUsernamePlaceholderValue);` after initialization of library.
 
 Each of these placeholders is optional in use. Also it is possible to add custom placeholder but value for such placeholders should be provided from users of this library. Values should be known before sending invitation (see *Sending invitations* section of this file).  
 
