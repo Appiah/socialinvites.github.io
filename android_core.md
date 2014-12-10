@@ -63,7 +63,7 @@ If message has client placeholders, you have to create list of String objects wh
 - **END_USER_MSISDN**: Assigns end user phone number to placeholder. Note that you have to provide end users phone number after initialization of library. Provide phone number by calling of method `setEndUserMSISDNPlaceholder(endUserMSISDNPlaceholderValue);`
 - **END_USER_USERNAME**: Assigns end user username to placeholder.  You have to provide end user username by calling method `setEndUserUsernamePlaceholder(endUserUsernamePlaceholderValue);` after initialization of library.
 
-Each of these placeholders is optional in use. Also it is possible to add custom placeholder but value for such placeholders should be provided from users of this library. Values should be known before sending invitation (see [Sending invitations](#sending-invitations) section of this file).  
+Each of these placeholders is optional in use. Also it is possible to add custom placeholder but value for such placeholders should be provided from users of this library. Values should be known before sending invitation (see *Sending invitations* section of this file).  
 
 	List<String> messagePlaceholders = new ArrayList<String>();
     messagePlaceholders.add(MessagePlaceholders.RECEIVER_NAME.toString());
