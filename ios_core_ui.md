@@ -60,11 +60,11 @@ For library initialization simple call one of the following methods:
 This methods use your Infobip application key, secret key and default message id for your application, all method's parameters are type of string. 
 If your default message text contains client placeholders you have to use the second method (with client list for placeholders) for initialization. Client list for placeholders represents array of strings which will be used to populate your client placeholders in default message respectively.In client list for placeholders  it is possible to use predefined values from **IBSIMessagePlaceholders** enum:
 	
-- RECEIVER_NAME: Assigns name of contact, to which user sends social invitation, fetched from user's phonebook. 
-- SENDER_NAME: Assigns defined sender id for application. Note that you have to provide sender id (see the next chapter);
-- CUSTOM_TEXT: With this value for placeholder defined in a list you give possibilty to end users to write their own part of message. 
-- END USER_MSISDN: Assigns end user phone number to placeholder. Note that you have to provide end users phone number after initialization of library. Provide phone number by calling `+ (void)setEndUserMsisdn:(NSString *)msisdn` method from **InfobipSocialInvite**;
-- END USER_USERNAME: Assigns end user username to placeholder.  You have to provide end user username by calling `+ (void)setEndUserUsername:(NSString *)username`  method from **InfobipSocialInvite** after initialization of library.
+- **RECEIVER_NAME:** Assigns name of contact, to which user sends social invitation, fetched from user's phonebook. 
+- **SENDER_NAME:** Assigns defined sender id for application. Note that you have to provide sender id (see the next chapter);
+- **CUSTOM_TEXT:** With this value for placeholder defined in a list you give possibilty to end users to write their own part of message. 
+- **END\_USER_MSISDN:** Assigns end user phone number to placeholder. Note that you have to provide end users phone number after initialization of library. Provide phone number by calling `+ (void)setEndUserMsisdn:(NSString *)msisdn` method from **InfobipSocialInvite**;
+- **END\_USER_USERNAME:** Assigns end user username to placeholder.  You have to provide end user username by calling `+ (void)setEndUserUsername:(NSString *)username`  method from **InfobipSocialInvite** after initialization of library.
 
 Also it is possible to add custom value for placeholder but remember that a number of parameters in client list for placeholders must match the number of client placeholders in your default message otherwise you will receive *Invalid parameters* error.
 
