@@ -9,6 +9,8 @@ weight: 4
 
 This project is an Android library which can be merged with your Android project and enable you to use Infobip Social Invites.
 
+You can download **aar** file <a href="social-invites-ui-aar.zip">here</a>.
+
 ## Requirements
 
 - The lowest required Android SDK version is set to 8.
