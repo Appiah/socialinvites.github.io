@@ -17,7 +17,7 @@ This project is an Android library which can be merged with your Android project
 
 ## Step by step integration
 
-<table>
+<table class="table table-bordered">
 <tr>
 <th>aar file integration</th>
 <th>jar file integration</th>
