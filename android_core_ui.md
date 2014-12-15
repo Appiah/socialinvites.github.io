@@ -9,7 +9,7 @@ weight: 4
 
 This project is an Android library which can be merged with your Android project and enable you to use Infobip Social Invites.
 
-You can download **aar** file <a href="social-invites-ui-aar.zip">here</a>.
+> You can download **aar** file <a href="social-invites-ui.aar">here</a>, and **jar** file <a href="social-invites-ui-jar.zip">here</a>.
 
 ## Requirements
 
@@ -17,10 +17,9 @@ You can download **aar** file <a href="social-invites-ui-aar.zip">here</a>.
 
 ## Step by step integration
 
-1. Copy the library file into libs folder.
-2. Add dependency to build.gradle file (`compile (name:'social-invites-ui', ext:'aar')`)
-3. Add user permissions, activity declaration and receiver declaration (as one of the application's components) to application project Manifest.xml file. 
-4. Rebuild your project.
+|aar file integration|jar file integration|
+|:-------|:-------|
+|1. Copy the library file into **libs** folder.<br/>2. Add dependency to **build.gradle** file (`compile (name:'social-invites-ui', ext:'aar')`)<br/>3. Add *user permissions*, *activity declaration* and *receiver declaration* (as one of the application's components) to application project **Manifest.xml** file.<br/>4. Rebuild your project.| 1. Copy files from **res** folder to project **res** folders.<br/>2. Copy **social-invites-ui.x.x.x.jar** from source folder to your **libs** folder.<br/>3. Add dependency to **build path** (*Right click on project -> Build path -> Configure build path -> Add jar -> Choose jars from your project libs folder*).<br/>4. Copy files from **assets** folder to your projects **assets** folder.<br/>5. Add *user permissions*, *activity declaration* and *receiver declaration* (as one of the application's components) to application project **Manifest.xml** file.<br/>6. Rebuild your project.|
 
 User permissions:
 
