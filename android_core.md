@@ -7,7 +7,11 @@ weight: 3
 
 # Social Invites library for Android™
 
-This project is an Android library which can be merged with your Android project and enable you to use Infobip Social Invites.
+This project is an Android library which can be merged with your Android project and enable you to use Infobip Social Invites. 
+
+<a href="social-invites-core-jar.zip">Download jar.</a>
+
+<a href="social-invites-core-aar.zip">Download aar.</a>
 
 ## Requirements
 
