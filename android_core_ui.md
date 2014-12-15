@@ -17,9 +17,16 @@ This project is an Android library which can be merged with your Android project
 
 ## Step by step integration
 
-|aar file integration|jar file integration|
-|:-------|:-------|
-|1. Copy the library file into **libs** folder.<br/>2. Add dependency to **build.gradle** file (`compile (name:'social-invites-ui', ext:'aar')`)<br/>3. Add *user permissions*, *activity declaration* and *receiver declaration* (as one of the application's components) to application project **Manifest.xml** file.<br/>4. Rebuild your project.| 1. Copy files from **res** folder to project **res** folders.<br/>2. Copy **social-invites-ui.x.x.x.jar** from source folder to your **libs** folder.<br/>3. Add dependency to **build path** (*Right click on project -> Build path -> Configure build path -> Add jar -> Choose jars from your project libs folder*).<br/>4. Copy files from **assets** folder to your projects **assets** folder.<br/>5. Add *user permissions*, *activity declaration* and *receiver declaration* (as one of the application's components) to application project **Manifest.xml** file.<br/>6. Rebuild your project.|
+<table>
+<tr>
+<th>aar file integration</th>
+<th>jar file integration</th>
+</tr>
+<tr>
+<td>1. Copy the library file into **libs** folder.<br/>2. Add dependency to **build.gradle** file (`compile (name:'social-invites-ui', ext:'aar')`)<br/>3. Add *user permissions*, *activity declaration* and *receiver declaration* (as one of the application's components) to application project **Manifest.xml** file.<br/>4. Rebuild your project.</td>
+<td>1. Copy files from **res** folder to project **res** folders.<br/>2. Copy **social-invites-ui.x.x.x.jar** from source folder to your **libs** folder.<br/>3. Add dependency to **build path** (*Right click on project -> Build path -> Configure build path -> Add jar -> Choose jars from your project libs folder*).<br/>4. Copy files from **assets** folder to your projects **assets** folder.<br/>5. Add *user permissions*, *activity declaration* and *receiver declaration* (as one of the application's components) to application project **Manifest.xml** file.<br/>6. Rebuild your project.</td>
+</tr>
+</table>
 
 User permissions:
 
