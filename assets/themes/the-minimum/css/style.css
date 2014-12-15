@@ -877,9 +877,6 @@ pre {
   margin-left: 8px;
 }
 
-.table-bordered th,.table-bordered td{
-  border:1px solid #ddd!important
-  padding: 5px;
-}
+.table-bordered th,.table-bordered td{border:1px solid #ddd!important}
 }
 
